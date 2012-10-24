@@ -1,0 +1,18 @@
+<package>
+  <description brief="naoExplorer">
+
+     naoExplorer
+
+  </description>
+  <author>Joel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/naoExplorer</url>
+  <depend package="nao_components"/>
+  <depend package="sensor_msgs"/>
+  <depend package="image_transport"/>
+ <depend package="cv_bridge"/>
+
+</package>
+
+
