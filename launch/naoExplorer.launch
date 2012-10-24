@@ -1,0 +1,37 @@
+<launch>
+  <!-- 
+    start additional Nao components so that they connect to a local NaoQI
+    (e.g. a local simulated one or when running directly on the robot).
+    
+    For a remote connection, change IP and port accordingly in the NAO_IP and NAO_PORT 
+    environment variables.
+  -->
+  
+  <!-- 
+  	This pushes the local PYTHONPATH into the launch file, so that the NaoQI API is found.
+    You need to add the Nao's API dir to your PYTHONPATH so that the modules are found.
+  -->
+  <env name="PYTHONPATH" value="$(env PYTHONPATH)" /> 
+
+  <arg name="nao_ip" default="$(optenv NAO_IP 127.0.0.1)" />
+  <arg name="nao_port" default="$(optenv NAO_PORT 9559)" />
+  
+  <!-- bring up basic drivers -->
+  <include  file="$(find nao_driver)/launch/nao_driver.launch"/>
+  <!-- bring up behaviour components -->
+  <include  file="$(find nao_remote)/launch/nao_remote.launch"/>
+  <!-- bring up our custom components -->
+  <include  file="$(find nao_components)/launch/nao_components.launch"/>
+
+  <!-- add our own positions for the pose manager -->
+  <rosparam file="$(find nao_components)/config/bham_poses.yaml" command="load" ns="/pose_manager/poses"/>
+
+<node pkg="nao_driver" type="nao_camera.py" name="nao_camera" required="true" args="--pip=$(env NAO_IP) --pport=$(env NAO_PORT)" output="screen"/>
+
+<node pkg="naoExplorer" type="Color_Finder" name="Color_Finder" required="true" output="screen"/>
+
+<node pkg="image_view" type="image_view" name="image_view" required="true" args="image:=/image_raw" output="screen"/>
+
+  
+
+</launch>
