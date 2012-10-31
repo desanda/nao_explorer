@@ -62,32 +62,6 @@ cv_bridge::CvImagePtr getMask(cv_bridge::CvImagePtr cvImagePtr)
 	}
 
 
-cv_bridge::CvImage maskToImage(vector<bool> mask, int imageWidth)
-{
-	cv_bridge::CvImage image;
-	image.encoding = "bgr8";
-	int width = imageWidth;
-	int height = mask.size() / imageWidth;
-	image.image = Mat::zeros(height, width, CV_8UC3 );
-
-
-	for(int i = 0; i < mask.size(); i++)
-	{
-		if(mask[i])
-		{
-			vector<int>indexes = VectorHelper::oneIndexToTwo(i, width);
-			image.image.at<cv::Vec3b>(indexes[0],indexes[1]) = Vec3b(255,255,255);
-		}
-
-	}
-
-	//image.image.at<cv::Vec3b>(0,0) = Vec3b(255,255,255);
-
-	return image;
-
-
-}
-
 CvImagePtr resizeImage(CvImagePtr inputImage, int width, int height)
 {
 	Mat mat = inputImage -> image;

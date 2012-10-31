@@ -11,9 +11,13 @@ class ImagePublisher
 {
 	public:
 
-	queue<cv_bridge::CvImage> toPublish;
+	void publishImage(cv_bridge::CvImage image)
+	{
+		toPublish.push(image);
+	}
 
-	void publish(ros::NodeHandle n, std::string topic)
+
+	void startPublishing(ros::NodeHandle n, std::string topic)
 		{
 		image_pub = n.advertise<sensor_msgs::Image>(topic, 1000);
 		count = 0;
@@ -42,6 +46,8 @@ class ImagePublisher
 	private:
 	int count;
 	ros::Publisher image_pub;
+
+	queue<cv_bridge::CvImage> toPublish;
 
 
 

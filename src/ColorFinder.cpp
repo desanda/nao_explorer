@@ -28,12 +28,12 @@ CvImagePtr mask = getMask(imagePtr);
 
 
 //Publish results of colour finding
-maskPublisher.toPublish.push(*mask);
+maskPublisher.publishImage(*mask);
 
 //Resize Image
 CvImagePtr resizedImage = resizeImage(mask, 4, 3);
 
-resizedPublisher.toPublish.push(*resizedImage);
+resizedPublisher.publishImage(*resizedImage);
 
 
 
@@ -65,10 +65,10 @@ int main(int argc, char **argv)
 
 	ros::Subscriber sub = n.subscribe("image_raw", 1000, findColors);
 
-	while(ros::ok)
+	while(ros::ok())
 	{
-	maskPublisher.publish(n, string("image_mask"));
-	resizedPublisher.publish(n, string("image_resized"));
+	maskPublisher.startPublishing(n, string("image_mask"));
+	resizedPublisher.startPublishing(n, string("image_resized"));
 	}
 
 
