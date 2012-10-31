@@ -23,15 +23,20 @@ void findColors(const sensor_msgs::Image msg)
 //Get Image Mask
 cv_bridge::CvImagePtr imagePtr = convertToOpenCV(msg);
 
+CvImagePtr mask = getMask(imagePtr);
+
+
+
 //Process Image Mask
-vector<bool> mask = getMask(imagePtr, Color(160,102,3), 20);
+//vector<bool> mask = getMask(imagePtr, Color(160,102,3), 20);
 
 //Convert Image mask to OpenCV
 
-cv_bridge::CvImage maskImage = maskToImage(mask, (msg.step/3));
+//cv_bridge::CvImage maskImage = maskToImage(mask, (msg.step/3));
 
 //Publish results of colour finding
-maskPublisher.toPublish.push(maskImage);
+maskPublisher.toPublish.push(*mask);
+
 
 //stringstream info;
 //
