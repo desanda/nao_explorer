@@ -32,6 +32,7 @@
 
 <node pkg="image_view" type="image_view" name="image_view" required="true" args="image:=/image_raw" output="screen"/>
 <node pkg="image_view" type="image_view" name="mask_view" required="true" args="image:=/image_mask" output="screen"/>
+<node pkg="image_view" type="image_view" name="resized_view" required="true" args="image:=/image_resized" output="screen"/>
 
   
 

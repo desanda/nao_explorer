@@ -19,8 +19,7 @@ class ImagePublisher
 		count = 0;
 
 		  ros::Rate loop_rate(10);
-			  while (ros::ok())
-			    {
+
 				  while(!toPublish.empty())
 				  {
 					  cv_bridge::CvImage image = toPublish.front();
@@ -36,7 +35,7 @@ class ImagePublisher
 
 				    loop_rate.sleep();
 				    ++count;
-			    }
+
 		}
 
 

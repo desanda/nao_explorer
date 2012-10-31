@@ -16,6 +16,7 @@ cv_bridge::CvImagePtr convertToOpenCV(sensor_msgs::Image msg);
 
 int filesCaptured = 0;
 ImagePublisher maskPublisher;
+ImagePublisher resizedPublisher;
 
 void findColors(const sensor_msgs::Image msg)
 {
@@ -26,16 +27,16 @@ cv_bridge::CvImagePtr imagePtr = convertToOpenCV(msg);
 CvImagePtr mask = getMask(imagePtr);
 
 
-
-//Process Image Mask
-//vector<bool> mask = getMask(imagePtr, Color(160,102,3), 20);
-
-//Convert Image mask to OpenCV
-
-//cv_bridge::CvImage maskImage = maskToImage(mask, (msg.step/3));
-
 //Publish results of colour finding
 maskPublisher.toPublish.push(*mask);
+
+//Resize Image
+CvImagePtr resizedImage = resizeImage(mask, 4, 3);
+
+resizedPublisher.toPublish.push(*resizedImage);
+
+
+
 
 
 //stringstream info;
@@ -53,7 +54,6 @@ maskPublisher.toPublish.push(*mask);
 	//TODO:Write function that takes this data and turns it into an image
 	//TODO:Write some stuff that can actually output the data from my image analysis
 	//TODO:Write a node that takes this image and passes it through camera processing broadcasting results of colour search
-	//TODO:Create Git Repo
 }
 
 int main(int argc, char **argv)
@@ -65,7 +65,11 @@ int main(int argc, char **argv)
 
 	ros::Subscriber sub = n.subscribe("image_raw", 1000, findColors);
 
+	while(ros::ok)
+	{
 	maskPublisher.publish(n, string("image_mask"));
+	resizedPublisher.publish(n, string("image_resized"));
+	}
 
 
 

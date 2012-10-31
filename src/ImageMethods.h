@@ -88,6 +88,29 @@ cv_bridge::CvImage maskToImage(vector<bool> mask, int imageWidth)
 
 }
 
+CvImagePtr resizeImage(CvImagePtr inputImage, int width, int height)
+{
+	Mat mat = inputImage -> image;
+	IplImage originalImage = mat;
+
+	CvSize resizedImageSize;
+	resizedImageSize.width = width;
+	resizedImageSize.height = height;
+
+	IplImage* resizedImage = cvCreateImage(resizedImageSize, 8, 1);
+	//TODO:Play around with samping option paramaters on cvResize
+	cvResize(&originalImage, resizedImage);
+
+	CvImagePtr imagePointer(new CvImage);
+	Mat resizedImageMatrix(resizedImage);
+
+	resizedImageMatrix.copyTo(imagePointer->image);
+	imagePointer->encoding= string("mono8");
+
+	return imagePointer;
+
+}
+
 
 
 string getPixel(cv_bridge::CvImagePtr cvImagePtr)
