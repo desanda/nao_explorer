@@ -28,9 +28,10 @@
 
 <node pkg="nao_driver" type="nao_camera.py" name="nao_camera" required="true" args="--pip=$(env NAO_IP) --pport=$(env NAO_PORT)" output="screen"/>
 
-<node pkg="naoExplorer" type="Color_Finder" name="Color_Finder" required="true" output="screen"/>
+<node pkg="nao_explorer" type="Color_Finder" name="Color_Finder" required="true" output="screen"/>
 
 <node pkg="image_view" type="image_view" name="image_view" required="true" args="image:=/image_raw" output="screen"/>
+<node pkg="image_view" type="image_view" name="mask_view" required="true" args="image:=/image_mask" output="screen"/>
 
   
 

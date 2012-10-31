@@ -5,38 +5,45 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include "ImageMethods.h"
-
+#include "ImagePublisher.h"
 
 using namespace std;
 using namespace NaoExplorer;
 
 namespace enc = sensor_msgs::image_encodings;
 
-int filesCaptured = 0;
-
-
 cv_bridge::CvImagePtr convertToOpenCV(sensor_msgs::Image msg);
+
+int filesCaptured = 0;
+ImagePublisher maskPublisher;
 
 void findColors(const sensor_msgs::Image msg)
 {
 
 //Get Image Mask
 cv_bridge::CvImagePtr imagePtr = convertToOpenCV(msg);
-string pixel = getPixel(imagePtr);
 
-ROS_INFO("%s", pixel.c_str());
-
-
-//Send Image Mask to Image Viewer
 //Process Image Mask
+vector<bool> mask = getMask(imagePtr, Color(160,102,3), 20);
+
+//Convert Image mask to OpenCV
+
+cv_bridge::CvImage maskImage = maskToImage(mask, (msg.step/3));
+
 //Publish results of colour finding
+maskPublisher.toPublish.push(maskImage);
+
+//stringstream info;
+//
+//////info << msg.step << ",";
+////info << mask.size() << ",";
+////info << msg.height << ",";
+//////info << msg.width;
+////
+////
+////ROS_INFO(info.str().c_str());
 
 
-//Image newImage;
-
-//(msg.data, msg.width, msg.height);
-
-	//ROS_INFO("Here be data");
 
 	//TODO:Write function that takes this data and turns it into an image
 	//TODO:Write some stuff that can actually output the data from my image analysis
@@ -52,6 +59,8 @@ int main(int argc, char **argv)
 
 
 	ros::Subscriber sub = n.subscribe("image_raw", 1000, findColors);
+
+	maskPublisher.publish(n, string("image_mask"));
 
 
 

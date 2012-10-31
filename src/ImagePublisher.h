@@ -11,14 +11,32 @@ class ImagePublisher
 {
 	public:
 
-	queue<cv_bridge::CvImagePtr> toPublish;
+	queue<cv_bridge::CvImage> toPublish;
 
-	ImagePublisher(ros::NodeHandle n, std::string topic)
+	void publish(ros::NodeHandle n, std::string topic)
 		{
 		image_pub = n.advertise<sensor_msgs::Image>(topic, 1000);
 		count = 0;
 
-		publishMsgs();
+		  ros::Rate loop_rate(10);
+			  while (ros::ok())
+			    {
+				  while(!toPublish.empty())
+				  {
+					  cv_bridge::CvImage image = toPublish.front();
+					  toPublish.pop();
+
+
+					  image_pub.publish(convertToRosImage(image));
+				  }
+
+
+
+				    ros::spinOnce();
+
+				    loop_rate.sleep();
+				    ++count;
+			    }
 		}
 
 
@@ -26,49 +44,11 @@ class ImagePublisher
 	int count;
 	ros::Publisher image_pub;
 
-	void publishMsgs()
+
+
+	sensor_msgs::ImagePtr convertToRosImage(cv_bridge::CvImage image)
 	{
-		  ros::Rate loop_rate(10);
-		  while (ros::ok())
-		    {
-			  while(!toPublish.empty())
-			  {
-				  cv_bridge::CvImagePtr image = toPublish.front();
-				  toPublish.pop();
-				  image_pub.publish(convertToRosImage(image));
-			  }
-
-			    ros::spinOnce();
-
-			    loop_rate.sleep();
-			    ++count;
-		    }
-
-	}
-
-	sensor_msgs::Image convertToRosImage(cv_bridge::CvImagePtr image)
-	{
-	     ros::Time time = ros::Time::now();
-
-	            // convert OpenCV image to ROS message
-	            cv_bridge::CvImage cvi;
-	            cvi.header.stamp = time;
-	            cvi.header.frame_id = "image";
-	            cvi.encoding = "bgr8";
-	            cvi.image = image.get();
-//
-//	            // get camera parameters
-//	            sensor_msgs::CameraInfo info = info_mgr.getCameraInfo();
-//	            info.header.stamp = cvi.header.stamp;
-//	            info.header.frame_id = cvi.header.frame_id; // whatever it is called
-//	            info.width = cv_image.cols;
-//	            info.height = cv_image.rows;
-
-	            sensor_msgs::Image im;
-	            cvi.toImageMsg(im);
-
-	            return im;
-
+		return image.toImageMsg();
 	}
 //	ros::init(argc, argv, "ImagePublisher");
 //
